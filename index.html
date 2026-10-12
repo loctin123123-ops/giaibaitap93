@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giải Bài Tập Lớp 9/3</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0284c7', 600: '#0284c7', 700: '#0369a1' }
                     }
                 }
             }
@@ -39,27 +36,19 @@
     <header class="sticky top-0 z-40 bg-slate-800/90 border-b border-slate-700/80 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-indigo-500 to-purple-500 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/30 font-bold text-xl">
-                    📚
-                </div>
+                <div class="bg-gradient-to-tr from-indigo-500 to-purple-500 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/30 font-bold text-xl">📚</div>
                 <div>
                     <h1 class="text-lg font-bold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">Giải Bài Tập Lớp 9/3</h1>
                     <p class="text-xs text-slate-400 hidden sm:block">Đoàn kết • Học giỏi • Vững bước vào 10</p>
                 </div>
             </div>
-
-            <!-- Header Right Controls -->
             <div class="flex items-center space-x-3">
                 <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition">
                     <i class="fa-solid fa-sun text-yellow-400" id="themeIcon"></i>
                 </button>
-
-                <!-- Post Button (Leader Only) -->
                 <button onclick="checkCreatePostPermission()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-indigo-500/20 flex items-center gap-1.5">
                     <i class="fa-solid fa-plus text-sm"></i> <span class="hidden sm:inline">Đăng Bài Tập Mới</span>
                 </button>
-
-                <!-- Auth / Profile -->
                 <div id="userHeaderArea"></div>
             </div>
         </div>
@@ -83,21 +72,17 @@
     <!-- MAIN BODY -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-        <!-- LEFT COLUMN: Notices & Chat Room & Subject Filters -->
+        <!-- LEFT COLUMN -->
         <div class="lg:col-span-1 space-y-6">
-            
             <!-- NOTICE BOARD -->
             <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xl relative overflow-hidden">
                 <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-700">
                     <h3 class="font-bold text-white flex items-center gap-2 text-xs sm:text-sm">
-                        <i class="fa-solid fa-bullhorn text-amber-400"></i>
-                        Dặn Dò Cán Sự Lớp
+                        <i class="fa-solid fa-bullhorn text-amber-400"></i> Dặn Dò Cán Sự Lớp
                     </h3>
                     <span id="noticeCount" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-semibold">0</span>
                 </div>
-
                 <div id="noticeList" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
-
                 <div id="addNoticeForm" class="mt-3 pt-2.5 border-t border-slate-700 hidden">
                     <textarea id="noticeInput" rows="2" placeholder="Nhập tin dặn dò mới..." class="w-full text-xs p-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-indigo-500 resize-none mb-2"></textarea>
                     <button onclick="postNotice()" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition">
@@ -117,9 +102,7 @@
                     </h3>
                     <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-semibold">Live</span>
                 </div>
-
                 <div id="classChatHistory" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs"></div>
-
                 <div class="pt-2 border-t border-slate-700/80 flex items-center gap-1.5">
                     <input type="text" id="classChatInput" placeholder="Nhắn tin cho cả lớp..." onkeypress="if(event.key==='Enter') sendClassChatMessage()" class="flex-1 bg-slate-900 border border-slate-700 text-slate-200 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-emerald-500">
                     <button onclick="sendClassChatMessage()" class="p-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs transition">
@@ -149,10 +132,9 @@
                 </h3>
                 <div class="grid grid-cols-2 gap-1.5" id="subjectFilterList"></div>
             </div>
-
         </div>
 
-        <!-- RIGHT COLUMN: Posts List -->
+        <!-- RIGHT COLUMN -->
         <div class="lg:col-span-3 space-y-4">
             <div class="flex items-center justify-between bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
@@ -182,9 +164,7 @@
     <!-- MODAL: POST ASSIGNMENT -->
     <div id="createPostModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-lg shadow-2xl relative">
-            <button onclick="closeCreatePostModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+            <button onclick="closeCreatePostModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-pen-to-square text-indigo-400"></i> Đăng Bài Tập Mới (Cán Sự Lớp)
             </h3>
@@ -223,9 +203,7 @@
     <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="flex border-b border-slate-700 mb-5">
                 <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 pb-2.5 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition text-xs">Đăng Nhập</button>
                 <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 pb-2.5 text-center font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition text-xs">Đăng Ký Tài Khoản</button>
@@ -307,6 +285,13 @@
     </div>
 
     <script>
+        // --- FIREBASE CONFIG (REALTIME DATABASE CHUNG CHO CẢ LỚP) ---
+        const firebaseConfig = {
+            databaseURL: "https://giai-bai-tap-93-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const SUBJECTS = [
             { id: 'all', name: 'Tất cả môn', icon: '📚' },
             { id: 'toan', name: 'Toán Học', icon: '📐' },
@@ -336,12 +321,10 @@
         let selectedPostImageBase64 = null;
         let aiSelectedImageBase64 = null;
 
-        let registeredAccounts = JSON.parse(localStorage.getItem('lop93_accounts')) || {};
-        let notices = JSON.parse(localStorage.getItem('lop93_notices')) || [
-            { id: 1, author: 'Hệ Thống', role: 'Lớp trưởng', content: 'Chào mừng tập thể lớp 9/3 đến với không gian học tập chung!', date: 'Hôm nay' }
-        ];
-        let classChatMessages = JSON.parse(localStorage.getItem('lop93_chats')) || [];
-        let posts = JSON.parse(localStorage.getItem('lop93_posts')) || [];
+        let registeredAccounts = {};
+        let notices = [];
+        let classChatMessages = [];
+        let posts = [];
 
         window.onload = function() {
             const saved = sessionStorage.getItem('lop93_user_session');
@@ -354,9 +337,29 @@
             renderHeaderUser();
             renderSubjectFilters();
             renderSubjectOptions();
-            renderNotices();
-            renderClassChat();
-            renderPosts();
+
+            // Lắng nghe dữ liệu realtime từ Firebase cho toàn bộ lớp
+            db.ref('accounts').on('value', (snapshot) => {
+                registeredAccounts = snapshot.val() || {};
+            });
+
+            db.ref('notices').on('value', (snapshot) => {
+                const data = snapshot.val();
+                notices = data ? Object.values(data).reverse() : [];
+                renderNotices();
+            });
+
+            db.ref('chats').on('value', (snapshot) => {
+                const data = snapshot.val();
+                classChatMessages = data ? Object.values(data) : [];
+                renderClassChat();
+            });
+
+            db.ref('posts').on('value', (snapshot) => {
+                const data = snapshot.val();
+                posts = data ? Object.values(data).reverse() : [];
+                renderPosts();
+            });
 
             if (!currentUser) {
                 openAuthModal();
@@ -406,22 +409,21 @@
             const role = document.getElementById('regRole').value;
             if (!name || !pass) return;
 
-            if (registeredAccounts[name]) {
-                alert("⚠️ Tên tài khoản này đã tồn tại! Vui lòng chọn tên khác hoặc chuyển sang Đăng Nhập.");
-                return;
-            }
+            db.ref('accounts/' + name.replace(/[.#$\/\[\]]/g, '_')).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    alert("⚠️ Tên tài khoản này đã tồn tại! Vui lòng chọn tên khác hoặc chuyển sang Đăng Nhập.");
+                    return;
+                }
 
-            registeredAccounts[name] = { pass, role };
-            localStorage.setItem('lop93_accounts', JSON.stringify(registeredAccounts));
+                const newAcc = { pass, role };
+                db.ref('accounts/' + name.replace(/[.#$\/\[\]]/g, '_')).set(newAcc);
 
-            currentUser = { name, role };
-            sessionStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
-            closeAuthModal();
-            renderHeaderUser();
-            renderNotices();
-            renderPosts();
-            renderClassChat();
-            alert("🎉 Đăng ký thành công tài khoản: " + name);
+                currentUser = { name, role };
+                sessionStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
+                closeAuthModal();
+                renderHeaderUser();
+                alert("🎉 Đăng ký thành công tài khoản: " + name);
+            });
         }
 
         function handleLogin(e) {
@@ -430,28 +432,24 @@
             const pass = document.getElementById('loginPass').value.trim();
             if (!name || !pass) return;
 
-            const acc = registeredAccounts[name];
-            if (!acc || acc.pass !== pass) {
-                alert("❌ Sai tên tài khoản hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng bấm qua tab Đăng Ký.");
-                return;
-            }
+            db.ref('accounts/' + name.replace(/[.#$\/\[\]]/g, '_')).once('value', (snapshot) => {
+                const acc = snapshot.val();
+                if (!acc || acc.pass !== pass) {
+                    alert("❌ Sai tên tài khoản hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng bấm qua tab Đăng Ký.");
+                    return;
+                }
 
-            currentUser = { name, role: acc.role };
-            sessionStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
-            closeAuthModal();
-            renderHeaderUser();
-            renderNotices();
-            renderPosts();
-            renderClassChat();
+                currentUser = { name, role: acc.role };
+                sessionStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
+                closeAuthModal();
+                renderHeaderUser();
+            });
         }
 
         function handleLogout() {
             currentUser = null;
             sessionStorage.removeItem('lop93_user_session');
             renderHeaderUser();
-            renderNotices();
-            renderPosts();
-            renderClassChat();
             openAuthModal();
         }
 
@@ -493,7 +491,7 @@
                             </div>
                             <div class="flex items-center gap-1">
                                 <span class="text-slate-500">${msg.time}</span>
-                                ${canDelete ? `<button onclick="deleteChatMessage(${msg.id})" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
+                                ${canDelete ? `<button onclick="deleteChatMessage('${msg.firebaseId}')" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
                             </div>
                         </div>
                         <p class="text-[11px] text-slate-300 leading-snug">${escapeHtml(msg.text)}</p>
@@ -511,18 +509,22 @@
 
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const newRef = db.ref('chats').push();
 
-            classChatMessages.push({ id: Date.now(), author: currentUser.name, role: currentUser.role, text, time: timeStr });
-            localStorage.setItem('lop93_chats', JSON.stringify(classChatMessages));
+            newRef.set({
+                firebaseId: newRef.key,
+                author: currentUser.name,
+                role: currentUser.role,
+                text,
+                time: timeStr
+            });
+
             input.value = '';
-            renderClassChat();
         }
 
-        function deleteChatMessage(msgId) {
+        function deleteChatMessage(firebaseId) {
             if (!isHighRole()) return;
-            classChatMessages = classChatMessages.filter(m => m.id !== msgId);
-            localStorage.setItem('lop93_chats', JSON.stringify(classChatMessages));
-            renderClassChat();
+            db.ref('chats/' + firebaseId).remove();
         }
 
         function renderNotices() {
@@ -547,7 +549,7 @@
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <span class="text-slate-500">${n.date}</span>
-                                    ${canDelete ? `<button onclick="deleteNotice(${n.id})" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
+                                    ${canDelete ? `<button onclick="deleteNotice('${n.firebaseId}')" class="text-red-400 hover:text-red-300 ml-1"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
                                 </div>
                             </div>
                             <p class="text-xs text-slate-300">${escapeHtml(n.content)}</p>
@@ -569,17 +571,21 @@
             const text = input.value.trim();
             if (!text) return;
 
-            notices.unshift({ id: Date.now(), author: currentUser.name, role: currentUser.role, content: text, date: 'Vừa xong' });
-            localStorage.setItem('lop93_notices', JSON.stringify(notices));
+            const newRef = db.ref('notices').push();
+            newRef.set({
+                firebaseId: newRef.key,
+                author: currentUser.name,
+                role: currentUser.role,
+                content: text,
+                date: 'Vừa xong'
+            });
+
             input.value = '';
-            renderNotices();
         }
 
-        function deleteNotice(id) {
+        function deleteNotice(firebaseId) {
             if (!isHighRole()) return;
-            notices = notices.filter(n => n.id !== id);
-            localStorage.setItem('lop93_notices', JSON.stringify(notices));
-            renderNotices();
+            db.ref('notices/' + firebaseId).remove();
         }
 
         function renderSubjectFilters() {
@@ -634,8 +640,9 @@
             const content = document.getElementById('postContent').value.trim();
             if (!title || !content) return;
 
-            posts.unshift({
-                id: Date.now(),
+            const newRef = db.ref('posts').push();
+            newRef.set({
+                firebaseId: newRef.key,
                 author: currentUser.name,
                 role: currentUser.role,
                 subjectId,
@@ -646,19 +653,15 @@
                 comments: []
             });
 
-            localStorage.setItem('lop93_posts', JSON.stringify(posts));
             document.getElementById('postTitle').value = '';
             document.getElementById('postContent').value = '';
             removeSelectedImage();
             closeCreatePostModal();
-            renderPosts();
         }
 
-        function deletePost(postId) {
+        function deletePost(firebaseId) {
             if (!isHighRole()) return;
-            posts = posts.filter(p => p.id !== postId);
-            localStorage.setItem('lop93_posts', JSON.stringify(posts));
-            renderPosts();
+            db.ref('posts/' + firebaseId).remove();
         }
 
         function renderPosts() {
@@ -675,6 +678,7 @@
                 const subMeta = SUBJECTS.find(s => s.id === post.subjectId) || { name: 'Môn học', icon: '📝' };
                 const roleMeta = ROLES_INFO[post.role] || ROLES_INFO['Học sinh'];
                 const canDelete = isHighRole();
+                const commentsArr = post.comments ? Object.values(post.comments) : [];
 
                 return `
                     <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xl space-y-3">
@@ -689,7 +693,7 @@
                                     <div class="text-[10px] text-slate-400">${subMeta.icon} ${subMeta.name} • ${post.date}</div>
                                 </div>
                             </div>
-                            ${canDelete ? `<button onclick="deletePost(${post.id})" class="px-2 py-1 bg-red-600/20 text-red-300 hover:bg-red-600 hover:text-white text-[10px] rounded-lg font-semibold transition flex items-center gap-1"><i class="fa-solid fa-trash-can"></i> Xóa Bài</button>` : ''}
+                            ${canDelete ? `<button onclick="deletePost('${post.firebaseId}')" class="px-2 py-1 bg-red-600/20 text-red-300 hover:bg-red-600 hover:text-white text-[10px] rounded-lg font-semibold transition flex items-center gap-1"><i class="fa-solid fa-trash-can"></i> Xóa Bài</button>` : ''}
                         </div>
                         <div class="space-y-1">
                             <h4 class="text-sm font-bold text-slate-100">${escapeHtml(post.title)}</h4>
@@ -697,9 +701,9 @@
                         </div>
                         ${post.imageUrl ? `<div class="rounded-xl overflow-hidden border border-slate-700 max-h-80 bg-slate-900 cursor-pointer" onclick="openImageViewer('${post.imageUrl}')"><img src="${post.imageUrl}" class="w-full h-full object-contain max-h-80"></div>` : ''}
                         <div class="pt-2 border-t border-slate-700/60 space-y-2">
-                            <div class="text-[11px] text-slate-400 font-semibold">${post.comments.length} Bình luận / Lời giải</div>
+                            <div class="text-[11px] text-slate-400 font-semibold">${commentsArr.length} Bình luận / Lời giải</div>
                             <div class="space-y-1.5 pl-2 border-l-2 border-slate-700">
-                                ${post.comments.map(c => {
+                                ${commentsArr.map(c => {
                                     const cRoleMeta = ROLES_INFO[c.role] || ROLES_INFO['Học sinh'];
                                     return `
                                         <div class="bg-slate-900/60 p-2 rounded-xl text-xs space-y-0.5">
@@ -713,8 +717,8 @@
                                 }).join('')}
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <input type="text" id="commentInput_${post.id}" placeholder="Viết câu trả lời..." onkeypress="if(event.key==='Enter') addComment(${post.id})" class="flex-1 bg-slate-900 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl focus:outline-none focus:border-indigo-500">
-                                <button onclick="addComment(${post.id})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold">Gửi</button>
+                                <input type="text" id="commentInput_${post.firebaseId}" placeholder="Viết câu trả lời..." onkeypress="if(event.key==='Enter') addComment('${post.firebaseId}')" class="flex-1 bg-slate-900 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl focus:outline-none focus:border-indigo-500">
+                                <button onclick="addComment('${post.firebaseId}')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold">Gửi</button>
                             </div>
                         </div>
                     </div>
@@ -722,19 +726,18 @@
             }).join('');
         }
 
-        function addComment(postId) {
+        function addComment(firebaseId) {
             if (!currentUser) { openAuthModal(); return; }
-            const input = document.getElementById(`commentInput_${postId}`);
+            const input = document.getElementById(`commentInput_${firebaseId}`);
             const text = input.value.trim();
             if (!text) return;
 
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                post.comments.push({ author: currentUser.name, role: currentUser.role, text });
-                localStorage.setItem('lop93_posts', JSON.stringify(posts));
-                input.value = '';
-                renderPosts();
-            }
+            db.ref(`posts/${firebaseId}/comments`).push({
+                author: currentUser.name,
+                role: currentUser.role,
+                text
+            });
+            input.value = '';
         }
 
         function openImageViewer(url) {
