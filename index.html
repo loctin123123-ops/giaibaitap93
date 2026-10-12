@@ -189,4 +189,109 @@
                 </button>
             `;
 
-            if
+            if (['Lớp trưởng', 'Lớp phó', 'Tổ trưởng'].includes(currentUser.role)) {
+                document.getElementById('leader-panel').classList.remove('hidden');
+            } else {
+                document.getElementById('leader-panel').classList.add('hidden');
+            }
+
+            renderHomework();
+            renderChat();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+
+            ['homework', 'chat', 'ai'].forEach(t => {
+                const btn = document.getElementById(`btn-tab-${t}`);
+                if (t === tab) {
+                    btn.className = "px-5 py-3 font-semibold text-blue-600 border-b-2 border-blue-600 flex items-center space-x-2 focus:outline-none whitespace-nowrap";
+                } else {
+                    btn.className = "px-5 py-3 font-semibold text-slate-500 hover:text-slate-700 flex items-center space-x-2 focus:outline-none whitespace-nowrap";
+                }
+            });
+        }
+
+        function createPost() {
+            const subject = document.getElementById('hw-subject').value;
+            const title = document.getElementById('hw-title').value.trim();
+            const desc = document.getElementById('hw-desc').value.trim();
+            if (!title) return alert('Vui lòng nhập tiêu đề!');
+
+            posts.unshift({ id: Date.now(), subject, title, desc, author: currentUser.fullname, date: new Date().toLocaleDateString('vi-VN') });
+            localStorage.setItem('gbt_posts_v2', JSON.stringify(posts));
+            renderHomework();
+
+            document.getElementById('hw-title').value = '';
+            document.getElementById('hw-desc').value = '';
+        }
+
+        function renderHomework() {
+            const container = document.getElementById('homework-list');
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-400">Chưa có bài tập nào được đăng.</div>`;
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-md">${post.subject}</span>
+                            <span class="text-xs text-slate-400">${post.date}</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-lg mb-1">${post.title}</h4>
+                        <p class="text-slate-600 text-sm whitespace-pre-line">${post.desc}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400 flex justify-between">
+                        <span>Đăng bởi: <strong>${post.author}</strong></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chat-msg');
+            const text = input.value.trim();
+            if (!text) return;
+
+            chatLogs.push({ name: currentUser.fullname, role: currentUser.role, text, time: new Date().toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}) });
+            localStorage.setItem('gbt_chat_v2', JSON.stringify(chatLogs));
+            renderChat();
+            input.value = '';
+        }
+
+        function renderChat() {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = chatLogs.map(log => `
+                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-2xs max-w-2xl">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="font-bold text-xs text-indigo-600">${log.name}</span>
+                        <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">${log.role}</span>
+                        <span class="text-[10px] text-slate-400">${log.time}</span>
+                    </div>
+                    <p class="text-sm text-slate-700">${log.text}</p>
+                </div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function askAITutor() {
+            const q = document.getElementById('ai-prompt').value.trim();
+            if (!q) return;
+
+            const res = document.getElementById('ai-response');
+            res.classList.remove('hidden');
+            res.innerHTML = `<i class="fas fa-spinner fa-spin mr-2 text-blue-600"></i>AI đang phân tích đề bài...`;
+
+            setTimeout(() => {
+                res.innerHTML = `
+                    <div class="font-bold text-emerald-700 mb-1"><i class="fas fa-check-circle mr-1"></i>Hướng dẫn giải:</div>
+                    <div class="text-sm text-slate-700 leading-relaxed">Đối với câu hỏi "${q}", bạn hãy chú ý các công thức và kiến thức trọng tâm Lớp 9. Nếu cần chi tiết hơn, hãy nhờ sự hỗ trợ thêm từ thầy cô và các bạn trong phòng chat nhé!</div>
+                `;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
