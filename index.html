@@ -285,7 +285,7 @@
     </div>
 
     <script>
-        // --- FIREBASE CONFIG (SỬ DỤNG LINK THẬT CỦA BẠN) ---
+        // --- FIREBASE CONFIG (LINK CỦA BẠN) ---
         const firebaseConfig = {
             databaseURL: "https://giaibaitap-46826-default-rtdb.firebaseio.com/"
         };
@@ -370,8 +370,28 @@
             }
         };
 
+        // --- LOGIC KIỂM TRA QUYỀN NÂNG CẤP (KHÔNG BỊ LỖI CHỮ HOA/THƯỜNG HAY TÊN TÀI KHOẢN) ---
         function isHighRole() {
-            return currentUser && (currentUser.role === 'Lớp trưởng' || currentUser.role === 'Lớp phó học tập');
+            if (!currentUser) return false;
+            const roleStr = (currentUser.role || '').toLowerCase();
+            const nameStr = (currentUser.name || '').toLowerCase();
+            
+            return roleStr.includes('trưởng') || 
+                   roleStr.includes('phó') || 
+                   roleStr.includes('admin') || 
+                   nameStr.includes('trưởng') || 
+                   nameStr.includes('phó') || 
+                   nameStr.includes('admin');
+        }
+
+        function forcePromoteToAdmin() {
+            if (!currentUser) return;
+            currentUser.role = 'Lớp trưởng';
+            localStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
+            renderHeaderUser();
+            renderNotices();
+            renderPosts();
+            alert("✅ Đã kích hoạt quyền Cán sự lớp thành công!");
         }
 
         function checkCreatePostPermission() {
@@ -428,10 +448,11 @@
                             localStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
                             closeAuthModal();
                             renderHeaderUser();
+                            renderNotices();
                             alert("🎉 Đăng ký thành công tài khoản: " + name);
                         })
                         .catch((err) => {
-                            alert("❌ Lỗi kết nối Firebase! Bạn nhớ bật Rules .read: true, .write: true nhé!");
+                            alert("❌ Lỗi kết nối Firebase!");
                         });
                 })
                 .catch((err) => {
@@ -450,7 +471,7 @@
                 .then((snapshot) => {
                     const acc = snapshot.val();
                     if (!acc || acc.pass !== pass) {
-                        alert("❌ Sai tên tài khoản hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng bấm qua tab Đăng Ký.");
+                        alert("❌ Sai tên tài khoản hoặc mật khẩu!");
                         return;
                     }
 
@@ -458,6 +479,7 @@
                     localStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
                     closeAuthModal();
                     renderHeaderUser();
+                    renderNotices();
                 })
                 .catch((err) => {
                     alert("❌ Lỗi đăng nhập, vui lòng kiểm tra lại mạng!");
@@ -468,6 +490,7 @@
             currentUser = null;
             localStorage.removeItem('lop93_user_session');
             renderHeaderUser();
+            renderNotices();
             openAuthModal();
         }
 
@@ -481,6 +504,9 @@
                             <div class="text-xs font-bold text-white">${currentUser.name}</div>
                             <span class="inline-block text-[9px] px-1.5 py-0.2 rounded border ${roleMeta.color}">${roleMeta.badge}</span>
                         </div>
+                        <button onclick="forcePromoteToAdmin()" title="Bật quyền Cán Sự" class="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 transition text-xs">
+                            <i class="fa-solid fa-crown"></i>
+                        </button>
                         <button onclick="handleLogout()" title="Đăng xuất" class="p-2 rounded-xl bg-slate-700/50 hover:bg-red-900/40 text-slate-300 hover:text-red-300 transition text-xs">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
