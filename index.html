@@ -285,9 +285,9 @@
     </div>
 
     <script>
-        // --- FIREBASE CONFIG ---
+        // --- FIREBASE CONFIG (SỬ DỤNG LINK THẬT CỦA BẠN) ---
         const firebaseConfig = {
-            databaseURL: "https://console.firebase.google.com/project/giaibaitap-46826/database/giaibaitap-46826-default-rtdb/data/~2F"
+            databaseURL: "https://giaibaitap-46826-default-rtdb.firebaseio.com/"
         };
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
@@ -431,7 +431,7 @@
                             alert("🎉 Đăng ký thành công tài khoản: " + name);
                         })
                         .catch((err) => {
-                            alert("❌ Lỗi kết nối, vui lòng thử lại!");
+                            alert("❌ Lỗi kết nối Firebase! Bạn nhớ bật Rules .read: true, .write: true nhé!");
                         });
                 })
                 .catch((err) => {
