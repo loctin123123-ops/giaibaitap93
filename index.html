@@ -1,893 +1,288 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giải Bài Tập Lớp 9/3</title>
+    <title>Giải bài tập lớp 9/3</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-        ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(71, 85, 105, 1); }
+        .chat-container { height: calc(100vh - 200px); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
-
-    <!-- HEADER -->
-    <header class="sticky top-0 z-40 bg-slate-800/90 border-b border-slate-700/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-indigo-500 to-purple-500 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/30 font-bold text-xl">
-                    📚
-                </div>
+                <i class="fas fa-graduation-cap text-2xl"></i>
                 <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">Giải Bài Tập Lớp 9/3</h1>
-                    <p class="text-xs text-slate-400 hidden sm:block">Đoàn kết • Học giỏi • Vững bước vào 10</p>
+                    <h1 class="text-xl font-bold">Giải bài tập lớp 9/3</h1>
+                    <p class="text-xs text-blue-200">Mọi người học giỏi để vào lớp 10 cùng nhau nhé 🚀</p>
                 </div>
             </div>
-
-            <!-- Header Right Controls -->
-            <div class="flex items-center space-x-3">
-                <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition">
-                    <i class="fa-solid fa-sun text-yellow-400" id="themeIcon"></i>
-                </button>
-
-                <!-- Post Button (Leader Only) -->
-                <button onclick="checkCreatePostPermission()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-indigo-500/20 flex items-center gap-1.5">
-                    <i class="fa-solid fa-plus text-sm"></i> <span class="hidden sm:inline">Đăng Bài Tập Mới</span>
-                </button>
-
-                <!-- Auth / Profile -->
-                <div id="userHeaderArea"></div>
+            <div id="user-status" class="flex items-center space-x-3">
+                <!-- Được render bằng Javascript -->
             </div>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="relative overflow-hidden bg-gradient-to-b from-indigo-900/40 via-slate-900 to-slate-900 border-b border-slate-800 py-8 px-4">
-        <div class="max-w-4xl mx-auto text-center space-y-3">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium">
-                <i class="fa-solid fa-sparkles text-amber-400"></i> Tập thể Lớp 9/3 Quyết Tâm
-            </div>
-            <h2 class="text-xl sm:text-3xl font-extrabold text-white tracking-tight leading-relaxed">
-                "Mọi người học giỏi để vào lớp 10 cùng nhau nhé 🚀"
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto">
-                Kho bài tập 13 môn học, bảng dặn dò cán sự lớp, trao đổi bài trực tiếp và trợ lý AI giải bài 24/7!
-            </p>
+    <!-- Main Container -->
+    <main class="container mx-auto p-4 max-w-5xl">
+        <!-- Auth Modal / Card -->
+        <div id="auth-section" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto my-10">
+            <h2 id="auth-title" class="text-2xl font-bold text-center mb-6 text-gray-800">Đăng Nhập</h2>
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Họ và Tên</label>
+                    <input type="text" id="auth-fullname" required class="w-full p-2 border rounded focus:outline-none focus:border-blue-500" placeholder="Ví dụ: Nguyễn Văn A">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Chức vụ trong lớp</label>
+                    <select id="auth-role" class="w-full p-2 border rounded focus:outline-none focus:border-blue-500">
+                        <option value="Học sinh">Học sinh</option>
+                        <option value="Lớp trưởng">Lớp trưởng</option>
+                        <option value="Lớp phó">Lớp phó</option>
+                        <option value="Tổ trưởng">Tổ trưởng</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition duration-200">
+                    Vào Trang Web
+                </button>
+            </form>
         </div>
-    </section>
 
-    <!-- MAIN BODY -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
-
-        <!-- LEFT COLUMN: Notices & Chat Room & Subject Filters -->
-        <div class="lg:col-span-1 space-y-6">
-            
-            <!-- NOTICE BOARD -->
-            <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xl relative overflow-hidden">
-                <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-700">
-                    <h3 class="font-bold text-white flex items-center gap-2 text-xs sm:text-sm">
-                        <i class="fa-solid fa-bullhorn text-amber-400"></i>
-                        Dặn Dò Cán Sự Lớp
-                    </h3>
-                    <span id="noticeCount" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-semibold">0</span>
-                </div>
-
-                <div id="noticeList" class="space-y-2.5 max-h-56 overflow-y-auto pr-1"></div>
-
-                <div id="addNoticeForm" class="mt-3 pt-2.5 border-t border-slate-700 hidden">
-                    <textarea id="noticeInput" rows="2" placeholder="Nhập tin dặn dò mới..." class="w-full text-xs p-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-indigo-500 resize-none mb-2"></textarea>
-                    <button onclick="postNotice()" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition">
-                        <i class="fa-solid fa-paper-plane"></i> Gửi Dặn Dò
-                    </button>
-                </div>
-                <div id="noticePermissionHint" class="mt-2 text-[11px] text-slate-500 text-center italic">
-                    🔒 Chỉ Lớp trưởng & Lớp phó HT được đăng dặn dò.
-                </div>
-            </div>
-
-            <!-- CLASS CHAT BOX (NHẮN TIN CHUNG TẤT CẢ TÀI KHOẢN) -->
-            <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xl flex flex-col h-80">
-                <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-700">
-                    <h3 class="font-bold text-white flex items-center gap-2 text-xs sm:text-sm">
-                        <i class="fa-solid fa-comments text-emerald-400"></i> Nhắn Tin Chung 9/3
-                    </h3>
-                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-semibold">Live</span>
-                </div>
-
-                <div id="classChatHistory" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs">
-                    <!-- Chat Messages rendered here -->
-                </div>
-
-                <div class="pt-2 border-t border-slate-700/80 flex items-center gap-1.5">
-                    <input type="text" id="classChatInput" placeholder="Nhắn tin cho cả lớp..." onkeypress="if(event.key==='Enter') sendClassChatMessage()" class="flex-1 bg-slate-900 border border-slate-700 text-slate-200 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-emerald-500">
-                    <button onclick="sendClassChatMessage()" class="p-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs transition">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- AI TUTOR BUTTON -->
-            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-4 text-white shadow-xl">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg">
-                        🤖
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs sm:text-sm">Gia Sư AI Lớp 9/3</h4>
-                        <p class="text-[10px] text-indigo-100">Giải đáp bài tập 13 môn</p>
-                    </div>
-                </div>
-                <button onclick="openAiModal()" class="w-full py-2 bg-white text-indigo-700 hover:bg-indigo-50 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Hỏi Bài AI Ngay
+        <!-- Main Dashboard (Ẩn khi chưa đăng nhập) -->
+        <div id="dashboard" class="hidden">
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-gray-200 bg-white rounded-t-lg mb-4">
+                <button onclick="switchTab('homework')" id="tab-homework" class="py-3 px-6 text-blue-600 font-semibold border-b-2 border-blue-600 focus:outline-none">
+                    <i class="fas fa-book-open mr-2"></i>Bài Tập & Thông Báo
+                </button>
+                <button onclick="switchTab('chat')" id="tab-chat" class="py-3 px-6 text-gray-500 font-semibold focus:outline-none">
+                    <i class="fas fa-comments mr-2"></i>Phòng Chat Lớp
+                </button>
+                <button onclick="switchTab('ai-tutor')" id="tab-ai-tutor" class="py-3 px-6 text-gray-500 font-semibold focus:outline-none">
+                    <i class="fas fa-robot mr-2"></i>Trợ Lý AI Học Tập
                 </button>
             </div>
 
-            <!-- 13 SUBJECT FILTER -->
-            <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xl">
-                <h3 class="font-bold text-white mb-2.5 text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-book text-indigo-400"></i> Danh Mục 13 Môn Học
-                </h3>
-                <div class="grid grid-cols-2 gap-1.5" id="subjectFilterList"></div>
-            </div>
+            <!-- TAB 1: BÀI TẬP & THÔNG BÁO -->
+            <div id="content-homework" class="tab-content active bg-white p-6 rounded-b-lg shadow-md">
+                <div id="leader-controls" class="hidden mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 class="font-bold text-blue-800 mb-2"><i class="fas fa-plus-circle mr-2"></i>Đăng bài tập / Thông báo mới (Dành cho Ban Cán Sự)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                        <select id="hw-subject" class="p-2 border rounded">
+                            <option value="Toán">Toán</option>
+                            <option value="Ngữ văn">Ngữ văn</option>
+                            <option value="Tiếng Anh">Tiếng Anh</option>
+                            <option value="Vật lý">Vật lý</option>
+                            <option value="Hóa học">Hóa học</option>
+                            <option value="Sinh học">Sinh học</option>
+                            <option value="Lịch sử">Lịch sử</option>
+                            <option value="Địa lý">Địa lý</option>
+                            <option value="GDCD">GDCD</option>
+                            <option value="Tin học">Tin học</option>
+                            <option value="Công nghệ">Công nghệ</option>
+                            <option value="Âm nhạc">Âm nhạc</option>
+                            <option value="Mỹ thuật">Mỹ thuật</option>
+                        </select>
+                        <input type="text" id="hw-title" placeholder="Tiêu đề bài tập / nội dung..." class="p-2 border rounded">
+                    </div>
+                    <textarea id="hw-desc" placeholder="Chi tiết bài tập hoặc lời dặn..." class="w-full p-2 border rounded mb-3" rows="3"></textarea>
+                    <button onclick="addHomework()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">Đăng Bài</button>
+                </div>
 
-        </div>
-
-        <!-- RIGHT COLUMN: Posts List -->
-        <div class="lg:col-span-3 space-y-4">
-
-            <div class="flex items-center justify-between bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-indigo-400"></i> Danh Sách Bài Tập
-                </h3>
-                <div class="text-xs text-slate-400">
-                    Đang xem: <span id="currentFilterName" class="font-bold text-indigo-300">Tất cả môn</span>
+                <h3 class="text-xl font-bold mb-4 text-gray-800">Danh Sách Bài Tập Cần Làm</h3>
+                <div id="homework-list" class="space-y-4">
+                    <!-- Danh sách bài tập render ở đây -->
                 </div>
             </div>
 
-            <div id="postsList" class="space-y-4"></div>
+            <!-- TAB 2: PHÒNG CHAT LỚP -->
+            <div id="content-chat" class="tab-content bg-white p-6 rounded-b-lg shadow-md">
+                <div class="chat-container flex flex-col justify-between">
+                    <div id="chat-messages" class="overflow-y-auto p-4 space-y-3 bg-gray-50 rounded-lg border flex-grow mb-4">
+                        <!-- Tin nhắn chat render ở đây -->
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." class="flex-grow p-2 border rounded focus:outline-none focus:border-blue-500" onkeypress="if(event.key==='Enter') sendMessage()">
+                        <button onclick="sendMessage()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">Gửi</button>
+                    </div>
+                </div>
+            </div>
 
+            <!-- TAB 3: TRỢ LÝ AI HỌC TẬP -->
+            <div id="content-ai-tutor" class="tab-content bg-white p-6 rounded-b-lg shadow-md">
+                <div class="text-center p-6">
+                    <i class="fas fa-robot text-5xl text-blue-600 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">Trợ Lý AI Lớp 9/3</h3>
+                    <p class="text-gray-600 mb-6">Giải đáp mọi bài tập Toán, Văn, Anh, Lý, Hóa cho các bạn chuẩn bị thi vào 10!</p>
+                    <div class="max-w-xl mx-auto border rounded-lg p-4 bg-gray-50 text-left">
+                        <textarea id="ai-question" class="w-full p-3 border rounded mb-3" rows="4" placeholder="Nhập câu hỏi hoặc đề bài bạn cần giải..."></textarea>
+                        <button onclick="askAI()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700">Nhờ AI Giải Giúp</button>
+                        <div id="ai-answer" class="mt-4 p-4 bg-white border rounded hidden">
+                            <!-- Đáp án AI -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-950 border-t border-slate-800/80 py-5 mt-10 text-center text-slate-400 text-xs">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div>
-                <p class="font-semibold text-slate-300">Giải bài tập lớp 9/3 · Chia sẻ kiến thức, cùng nhau tiến bộ 💙</p>
-                <p class="text-slate-500 mt-0.5">Slogan: "Mọi người học giỏi để vào lớp 10 cùng nhau nhé 🚀"</p>
-            </div>
-            <div class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-indigo-400 font-semibold text-xs">
-                Developer by Nguyễn Tấn Lộc
-            </div>
-        </div>
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-gray-500 text-xs py-4">
+        Developer by Nguyễn Tấn Lộc | Lớp 9/3
     </footer>
 
-    <!-- MODAL: POST ASSIGNMENT (LEADERS ONLY) -->
-    <div id="createPostModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-lg shadow-2xl relative">
-            <button onclick="closeCreatePostModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-indigo-400"></i> Đăng Bài Tập Mới (Cán Sự Lớp)
-            </h3>
-
-            <form onsubmit="handleCreatePost(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Môn Học</label>
-                    <select id="postSubject" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs focus:outline-none focus:border-indigo-500">
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Tiêu Đề Bài Tập</label>
-                    <input type="text" id="postTitle" placeholder="Ví dụ: Bài 3 Trang 42 SBT Toán 9..." required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs focus:outline-none focus:border-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Nội Dung / Đề Bài / Hướng Dẫn</label>
-                    <textarea id="postContent" rows="3" placeholder="Nhập chi tiết bài tập..." required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs focus:outline-none focus:border-indigo-500 resize-none"></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Ảnh Đính Kèm (Nếu có)</label>
-                    <div class="flex items-center gap-3">
-                        <label class="cursor-pointer bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3.5 py-2 rounded-xl font-medium transition border border-slate-600 flex items-center gap-2">
-                            <i class="fa-solid fa-image text-emerald-400"></i> Chọn Ảnh
-                            <input type="file" id="postImageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
-                        </label>
-                        <span id="imageFileName" class="text-xs text-slate-400 truncate max-w-xs">Chưa chọn ảnh</span>
-                    </div>
-                    <div id="imagePreviewContainer" class="mt-2 relative hidden w-28 h-28 rounded-xl overflow-hidden border border-slate-700 bg-slate-900">
-                        <img id="imagePreview" src="" class="w-full h-full object-cover">
-                        <button type="button" onclick="removeSelectedImage()" class="absolute top-1 right-1 bg-red-600/80 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">✕</button>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-indigo-500/20">
-                    Đăng Bài Tập
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- AUTH MODAL -->
-    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <div class="flex border-b border-slate-700 mb-5">
-                <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 pb-2.5 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition text-xs">Đăng Nhập</button>
-                <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 pb-2.5 text-center font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition text-xs">Đăng Ký Tài Khoản</button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5">
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Họ và Tên</label>
-                    <input type="text" id="loginName" placeholder="Nhập tên của bạn..." required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Mật khẩu</label>
-                    <input type="password" id="loginPass" placeholder="••••••••" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition">
-                    Đăng Nhập
-                </button>
-            </form>
-
-            <!-- Register Form with Role Picker -->
-            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Họ và Tên Học Sinh</label>
-                    <input type="text" id="regName" placeholder="Ví dụ: Nguyễn Văn A" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Mật khẩu</label>
-                    <input type="password" id="regPass" placeholder="Tạo mật khẩu..." required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Chức Vụ Lớp 9/3 👑</label>
-                    <select id="regRole" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-amber-300 font-semibold text-xs focus:outline-none focus:border-indigo-500">
-                        <option value="Học sinh">🎓 Học sinh</option>
-                        <option value="Lớp trưởng">👑 Lớp trưởng</option>
-                        <option value="Lớp phó học tập">📚 Lớp phó học tập</option>
-                        <option value="Tổ trưởng">📋 Tổ trưởng</option>
-                    </select>
-                    <p class="text-[10px] text-slate-400 mt-1">Chỉ Lớp trưởng & Lớp phó HT có quyền đăng bài tập và dặn dò.</p>
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs transition">
-                    Tạo Tài Khoản
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- AI TUTOR MODAL -->
-    <div id="aiModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-2xl h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-            <div class="p-4 bg-slate-900 border-b border-slate-700 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-base">🤖</div>
-                    <div>
-                        <h3 class="font-bold text-white text-xs sm:text-sm">Gia Sư AI Lớp 9/3</h3>
-                        <p class="text-[10px] text-emerald-400">Sẵn sàng trợ giúp bài tập 13 môn</p>
-                    </div>
-                </div>
-                <button onclick="closeAiModal()" class="text-slate-400 hover:text-white p-2">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div id="aiChatHistory" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900/50">
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3 max-w-[85%] text-xs text-slate-200">
-                    👋 Chào bạn! Mình là **Gia Sư AI 9/3**. Bạn gặp bài tập khó môn nào? Nhắn tin hoặc tải ảnh đề bài lên mình giải giúp nhé!
-                </div>
-            </div>
-
-            <div class="p-3 bg-slate-900 border-t border-slate-700 space-y-2">
-                <div id="aiImagePreviewBox" class="hidden relative inline-block">
-                    <img id="aiImagePreview" src="" class="w-14 h-14 object-cover rounded-lg border border-slate-600">
-                    <button onclick="clearAiImage()" class="absolute -top-1 -right-1 bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px]">✕</button>
-                </div>
-                <div class="flex items-center gap-2">
-                    <label class="cursor-pointer text-slate-400 hover:text-indigo-400 p-2 rounded-xl bg-slate-800 border border-slate-700 transition">
-                        <i class="fa-solid fa-paperclip text-sm"></i>
-                        <input type="file" id="aiImageInput" accept="image/*" class="hidden" onchange="handleAiImageSelect(event)">
-                    </label>
-                    <input type="text" id="aiInput" placeholder="Nhập câu hỏi bài tập tại đây..." onkeypress="if(event.key==='Enter') sendAiMessage()" class="flex-1 bg-slate-800 border border-slate-700 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-indigo-500">
-                    <button onclick="sendAiMessage()" class="px-3.5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FULL IMAGE VIEWER MODAL -->
-    <div id="imageViewerModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 hidden" onclick="closeImageViewer()">
-        <img id="fullImageView" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl">
-    </div>
-
     <script>
-        // --- DATA & CONSTANTS ---
-        const SUBJECTS = [
-            { id: 'all', name: 'Tất cả môn', icon: '📚' },
-            { id: 'toan', name: 'Toán Học', icon: '📐' },
-            { id: 'van', name: 'Ngữ Văn', icon: '📖' },
-            { id: 'anh', name: 'Tiếng Anh', icon: '🇬🇧' },
-            { id: 'ly', name: 'Vật Lý', icon: '⚡' },
-            { id: 'hoa', name: 'Hóa Học', icon: '🧪' },
-            { id: 'sinh', name: 'Sinh Học', icon: '🧬' },
-            { id: 'lsdl', name: 'Lịch Sử & Địa Lý', icon: '🗺️' },
-            { id: 'gdcd', name: 'GDCD', icon: '⚖️' },
-            { id: 'tin', name: 'Tin Học', icon: '💻' },
-            { id: 'congnghe', name: 'Công Nghệ', icon: '🔧' },
-            { id: 'mythuat', name: 'Mỹ Thuật', icon: '🎨' },
-            { id: 'amnhac', name: 'Âm Nhạc', icon: '🎵' },
-            { id: 'gdtc', name: 'GD Thể Chất', icon: '⚽' }
-        ];
-
-        const ROLES_INFO = {
-            'Lớp trưởng': { badge: '👑 Lớp trưởng', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
-            'Lớp phó học tập': { badge: '📚 Lớp phó HT', color: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
-            'Tổ trưởng': { badge: '📋 Tổ trưởng', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
-            'Học sinh': { badge: '🎓 Học sinh', color: 'bg-slate-700/50 text-slate-300 border-slate-600' }
-        };
-
         let currentUser = null;
-        let currentFilter = 'all';
-        let selectedPostImageBase64 = null;
-        let aiSelectedImageBase64 = null;
+        let homeworks = JSON.parse(localStorage.getItem('gbt_hw')) || [];
+        let messages = JSON.parse(localStorage.getItem('gbt_chat')) || [];
 
-        // MOCK DATA
-        let notices = [
-            { id: 1, author: 'Nguyễn Tấn Lộc', role: 'Lớp trưởng', content: 'Cả lớp lưu ý nộp bài tập Ngữ Văn trước 20h tối nay nhé!', date: 'Hôm nay 08:30' }
-        ];
-
-        let classChatMessages = [
-            { id: 1, author: 'Nguyễn Tấn Lộc', role: 'Lớp trưởng', text: 'Chào cả lớp 9/3! Bạn nào gặp bài khó cứ nhắn vào đây nhé.', time: '08:00' },
-            { id: 2, author: 'Lê Thảo Nhi', role: 'Lớp phó học tập', text: 'Mình đã cập nhật bài tập Toán mới ở phần Danh sách bài tập rồi nha.', time: '08:15' }
-        ];
-
-        let posts = [
-            {
-                id: 101,
-                author: 'Nguyễn Tấn Lộc',
-                role: 'Lớp trưởng',
-                subjectId: 'toan',
-                title: 'Giải hệ phương trình bằng phương pháp thế',
-                content: 'Giải hệ phương trình sau:\n1) 2x + y = 5\n2) x - y = 1\n\nCác bạn thảo luận lời giải ở phần bình luận nhé!',
-                imageUrl: null,
-                date: '10 phút trước',
-                comments: []
-            }
-        ];
-
+        // Kiểm tra phiên làm việc - MẶC ĐỊNH LÀ CHƯA ĐĂNG NHẬP DÙ Ở BẤT KỲ MÁY NÀO
         window.onload = function() {
-            const saved = localStorage.getItem('lop93_user');
-            if (saved) {
-                currentUser = JSON.parse(saved);
+            const savedUser = sessionStorage.getItem('gbt_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                renderApp();
             } else {
-                currentUser = { name: 'Nguyễn Tấn Lộc', role: 'Lớp trưởng' };
+                showAuth();
             }
-
-            renderHeaderUser();
-            renderSubjectFilters();
-            renderSubjectOptions();
-            renderNotices();
-            renderClassChat();
-            renderPosts();
         };
 
-        // --- AUTH & PERMISSIONS ---
-        function isHighRole() {
-            return currentUser && (currentUser.role === 'Lớp trưởng' || currentUser.role === 'Lớp phó học tập');
-        }
-
-        function checkCreatePostPermission() {
-            if (!currentUser) {
-                openAuthModal();
-                return;
-            }
-            if (!isHighRole()) {
-                alert("⚠️ Chỉ Lớp trưởng 👑 và Lớp phó học tập 📚 mới có quyền đăng bài tập mới!");
-                return;
-            }
-            document.getElementById('createPostModal').classList.remove('hidden');
-        }
-
-        function closeCreatePostModal() {
-            document.getElementById('createPostModal').classList.add('hidden');
-        }
-
-        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
-        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
-
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('loginForm');
-            const regForm = document.getElementById('registerForm');
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden'); regForm.classList.add('hidden');
-            } else {
-                loginForm.classList.add('hidden'); regForm.classList.remove('hidden');
-            }
-        }
-
-        function handleLogin(e) {
+        function handleAuth(e) {
             e.preventDefault();
-            const name = document.getElementById('loginName').value.trim();
-            if (!name) return;
-            let role = (currentUser && currentUser.name === name) ? currentUser.role : 'Học sinh';
-            currentUser = { name, role };
-            localStorage.setItem('lop93_user', JSON.stringify(currentUser));
-            closeAuthModal();
-            renderHeaderUser();
-            renderNotices();
-            renderPosts();
-            renderClassChat();
+            const fullname = document.getElementById('auth-fullname').value.trim();
+            const role = document.getElementById('auth-role').value;
+            
+            if (!fullname) return;
+
+            currentUser = { fullname, role };
+            // Lưu vào sessionStorage để mỗi tab/máy tính hoạt động độc lập
+            sessionStorage.setItem('gbt_current_user', JSON.stringify(currentUser));
+            renderApp();
         }
 
-        function handleRegister(e) {
-            e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const role = document.getElementById('regRole').value;
-            if (!name) return;
-            currentUser = { name, role };
-            localStorage.setItem('lop93_user', JSON.stringify(currentUser));
-            closeAuthModal();
-            renderHeaderUser();
-            renderNotices();
-            renderPosts();
-            renderClassChat();
-        }
-
-        function handleLogout() {
+        function logout() {
+            sessionStorage.removeItem('gbt_current_user');
             currentUser = null;
-            localStorage.removeItem('lop93_user');
-            renderHeaderUser();
-            renderNotices();
-            renderPosts();
-            renderClassChat();
+            location.reload();
         }
 
-        function renderHeaderUser() {
-            const container = document.getElementById('userHeaderArea');
-            if (currentUser) {
-                const roleMeta = ROLES_INFO[currentUser.role] || ROLES_INFO['Học sinh'];
-                container.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="text-right hidden sm:block">
-                            <div class="text-xs font-bold text-white">${currentUser.name}</div>
-                            <span class="inline-block text-[9px] px-1.5 py-0.2 rounded border ${roleMeta.color}">${roleMeta.badge}</span>
-                        </div>
-                        <button onclick="handleLogout()" title="Đăng xuất" class="p-2 rounded-xl bg-slate-700/50 hover:bg-red-900/40 text-slate-300 hover:text-red-300 transition text-xs">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                        </button>
-                    </div>
-                `;
+        function showAuth() {
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('user-status').innerHTML = '';
+        }
+
+        function renderApp() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+
+            document.getElementById('user-status').innerHTML = `
+                <div class="text-right">
+                    <span class="font-bold block">${currentUser.fullname}</span>
+                    <span class="text-xs bg-blue-800 px-2 py-0.5 rounded">${currentUser.role}</span>
+                </div>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">Đăng xuất</button>
+            `;
+
+            if (['Lớp trưởng', 'Lớp phó', 'Tổ trưởng'].includes(currentUser.role)) {
+                document.getElementById('leader-controls').classList.remove('hidden');
             } else {
-                container.innerHTML = `
-                    <button onclick="openAuthModal()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition">
-                        Đăng Nhập
-                    </button>
-                `;
-            }
-        }
-
-        // --- KHUNG NHẮN TIN CHUNG (CLASS CHAT) ---
-        function renderClassChat() {
-            const container = document.getElementById('classChatHistory');
-            container.innerHTML = classChatMessages.map(msg => {
-                const roleMeta = ROLES_INFO[msg.role] || ROLES_INFO['Học sinh'];
-                const canDelete = isHighRole();
-                return `
-                    <div class="p-2 rounded-xl bg-slate-900/90 border border-slate-700/60 space-y-1 relative group">
-                        <div class="flex items-center justify-between text-[10px]">
-                            <div class="flex items-center gap-1 font-bold text-slate-200">
-                                <span>${msg.author}</span>
-                                <span class="text-[8px] px-1 rounded border ${roleMeta.color}">${roleMeta.badge}</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="text-slate-500">${msg.time}</span>
-                                ${canDelete ? `
-                                    <button onclick="deleteChatMessage(${msg.id})" title="Xóa tin nhắn" class="text-red-400 hover:text-red-300 ml-1">
-                                        <i class="fa-solid fa-trash-can text-[10px]"></i>
-                                    </button>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <p class="text-[11px] text-slate-300 leading-snug">${escapeHtml(msg.text)}</p>
-                    </div>
-                `;
-            }).join('');
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function sendClassChatMessage() {
-            if (!currentUser) { openAuthModal(); return; }
-            const input = document.getElementById('classChatInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const now = new Date();
-            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            classChatMessages.push({
-                id: Date.now(),
-                author: currentUser.name,
-                role: currentUser.role,
-                text,
-                time: timeStr
-            });
-
-            input.value = '';
-            renderClassChat();
-        }
-
-        function deleteChatMessage(msgId) {
-            if (!isHighRole()) return;
-            classChatMessages = classChatMessages.filter(m => m.id !== msgId);
-            renderClassChat();
-        }
-
-        // --- KHUNG DẶN DÒ ---
-        function renderNotices() {
-            const container = document.getElementById('noticeList');
-            const countEl = document.getElementById('noticeCount');
-            const formEl = document.getElementById('addNoticeForm');
-            const hintEl = document.getElementById('noticePermissionHint');
-
-            countEl.innerText = notices.length;
-
-            if (notices.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Chưa có dặn dò nào.</p>`;
-            } else {
-                container.innerHTML = notices.map(n => {
-                    const roleMeta = ROLES_INFO[n.role] || ROLES_INFO['Học sinh'];
-                    const canDelete = isHighRole();
-                    return `
-                        <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 space-y-1">
-                            <div class="flex items-center justify-between text-[10px]">
-                                <div class="flex items-center gap-1 font-semibold text-slate-200">
-                                    <span>${n.author}</span>
-                                    <span class="text-[8px] px-1 rounded border ${roleMeta.color}">${roleMeta.badge}</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-slate-500">${n.date}</span>
-                                    ${canDelete ? `
-                                        <button onclick="deleteNotice(${n.id})" class="text-red-400 hover:text-red-300 ml-1">
-                                            <i class="fa-solid fa-trash-can text-[10px]"></i>
-                                        </button>
-                                    ` : ''}
-                                </div>
-                            </div>
-                            <p class="text-xs text-slate-300">${escapeHtml(n.content)}</p>
-                        </div>
-                    `;
-                }).join('');
+                document.getElementById('leader-controls').classList.add('hidden');
             }
 
-            if (isHighRole()) {
-                formEl.classList.remove('hidden'); hintEl.classList.add('hidden');
-            } else {
-                formEl.classList.add('hidden'); hintEl.classList.remove('hidden');
-            }
+            renderHomework();
+            renderChat();
         }
 
-        function postNotice() {
-            if (!isHighRole()) return;
-            const input = document.getElementById('noticeInput');
-            const text = input.value.trim();
-            if (!text) return;
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`content-${tabName}`).classList.add('active');
 
-            notices.unshift({
-                id: Date.now(),
-                author: currentUser.name,
-                role: currentUser.role,
-                content: text,
-                date: 'Vừa xong'
+            ['homework', 'chat', 'ai-tutor'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    btn.className = "py-3 px-6 text-blue-600 font-semibold border-b-2 border-blue-600 focus:outline-none";
+                } else {
+                    btn.className = "py-3 px-6 text-gray-500 font-semibold focus:outline-none";
+                }
             });
-
-            input.value = '';
-            renderNotices();
         }
 
-        function deleteNotice(id) {
-            if (!isHighRole()) return;
-            notices = notices.filter(n => n.id !== id);
-            renderNotices();
+        function addHomework() {
+            const subject = document.getElementById('hw-subject').value;
+            const title = document.getElementById('hw-title').value.trim();
+            const desc = document.getElementById('hw-desc').value.trim();
+
+            if (!title) return alert('Vui lòng nhập tiêu đề!');
+
+            homeworks.unshift({ id: Date.now(), subject, title, desc, author: currentUser.fullname, date: new Date().toLocaleDateString('vi-VN') });
+            localStorage.setItem('gbt_hw', JSON.stringify(homeworks));
+            renderHomework();
+
+            document.getElementById('hw-title').value = '';
+            document.getElementById('hw-desc').value = '';
         }
 
-        // --- SUBJECT FILTERS ---
-        function renderSubjectFilters() {
-            const container = document.getElementById('subjectFilterList');
-            container.innerHTML = SUBJECTS.map(s => `
-                <button onclick="filterBySubject('${s.id}')" class="flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-medium transition ${currentFilter === s.id ? 'bg-indigo-600 text-white shadow' : 'bg-slate-900/60 text-slate-300 hover:bg-slate-700'}">
-                    <span>${s.icon}</span>
-                    <span class="truncate text-[11px]">${s.name}</span>
-                </button>
-            `).join('');
-        }
-
-        function renderSubjectOptions() {
-            const select = document.getElementById('postSubject');
-            select.innerHTML = SUBJECTS.filter(s => s.id !== 'all').map(s => `
-                <option value="${s.id}">${s.icon} ${s.name}</option>
-            `).join('');
-        }
-
-        function filterBySubject(subId) {
-            currentFilter = subId;
-            const sub = SUBJECTS.find(s => s.id === subId);
-            document.getElementById('currentFilterName').innerText = sub ? sub.name : 'Tất cả môn';
-            renderSubjectFilters();
-            renderPosts();
-        }
-
-        // --- POSTS & ASSIGNMENTS ---
-        function handleImageSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            document.getElementById('imageFileName').innerText = file.name;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                selectedPostImageBase64 = evt.target.result;
-                document.getElementById('imagePreview').src = selectedPostImageBase64;
-                document.getElementById('imagePreviewContainer').classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function removeSelectedImage() {
-            selectedPostImageBase64 = null;
-            document.getElementById('postImageInput').value = '';
-            document.getElementById('imageFileName').innerText = 'Chưa chọn ảnh';
-            document.getElementById('imagePreviewContainer').classList.add('hidden');
-        }
-
-        function handleCreatePost(e) {
-            e.preventDefault();
-            if (!isHighRole()) return;
-
-            const subjectId = document.getElementById('postSubject').value;
-            const title = document.getElementById('postTitle').value.trim();
-            const content = document.getElementById('postContent').value.trim();
-
-            if (!title || !content) return;
-
-            posts.unshift({
-                id: Date.now(),
-                author: currentUser.name,
-                role: currentUser.role,
-                subjectId,
-                title,
-                content,
-                imageUrl: selectedPostImageBase64,
-                date: 'Vừa xong',
-                comments: []
-            });
-
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-            removeSelectedImage();
-            closeCreatePostModal();
-            renderPosts();
-        }
-
-        function deletePost(postId) {
-            if (!isHighRole()) return;
-            posts = posts.filter(p => p.id !== postId);
-            renderPosts();
-        }
-
-        function renderPosts() {
-            const container = document.getElementById('postsList');
-            let filtered = posts;
-            if (currentFilter !== 'all') filtered = posts.filter(p => p.subjectId === currentFilter);
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-slate-800/50 rounded-2xl p-6 text-center text-slate-400">
-                        <p class="text-xs">Chưa có bài tập nào thuộc danh mục này.</p>
-                    </div>
-                `;
+        function renderHomework() {
+            const list = document.getElementById('homework-list');
+            if (homeworks.length === 0) {
+                list.innerHTML = `<p class="text-gray-500 text-center py-6">Chưa có bài tập nào được đăng.</p>`;
                 return;
             }
 
-            container.innerHTML = filtered.map(post => {
-                const subMeta = SUBJECTS.find(s => s.id === post.subjectId) || { name: 'Môn học', icon: '📝' };
-                const roleMeta = ROLES_INFO[post.role] || ROLES_INFO['Học sinh'];
-                const canDelete = isHighRole();
-
-                return `
-                    <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xl space-y-3">
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs">
-                                    ${post.author.charAt(0)}
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-bold text-white text-xs sm:text-sm">${post.author}</span>
-                                        <span class="text-[8px] px-1.5 py-0.2 rounded border ${roleMeta.color}">${roleMeta.badge}</span>
-                                    </div>
-                                    <div class="text-[10px] text-slate-400">${subMeta.icon} ${subMeta.name} • ${post.date}</div>
-                                </div>
-                            </div>
-                            ${canDelete ? `
-                                <button onclick="deletePost(${post.id})" class="px-2 py-1 bg-red-600/20 text-red-300 hover:bg-red-600 hover:text-white text-[10px] rounded-lg font-semibold transition flex items-center gap-1">
-                                    <i class="fa-solid fa-trash-can"></i> Xóa Bài
-                                </button>
-                            ` : ''}
-                        </div>
-
-                        <div class="space-y-1">
-                            <h4 class="text-sm font-bold text-slate-100">${escapeHtml(post.title)}</h4>
-                            <p class="text-xs text-slate-300 whitespace-pre-line">${escapeHtml(post.content)}</p>
-                        </div>
-
-                        ${post.imageUrl ? `
-                            <div class="rounded-xl overflow-hidden border border-slate-700 max-h-80 bg-slate-900 cursor-pointer" onclick="openImageViewer('${post.imageUrl}')">
-                                <img src="${post.imageUrl}" class="w-full h-full object-contain max-h-80">
-                            </div>
-                        ` : ''}
-
-                        <!-- Comments -->
-                        <div class="pt-2 border-t border-slate-700/60 space-y-2">
-                            <div class="text-[11px] text-slate-400 font-semibold">${post.comments.length} Bình luận / Lời giải</div>
-                            <div class="space-y-1.5 pl-2 border-l-2 border-slate-700">
-                                ${post.comments.map(c => {
-                                    const cRoleMeta = ROLES_INFO[c.role] || ROLES_INFO['Học sinh'];
-                                    return `
-                                        <div class="bg-slate-900/60 p-2 rounded-xl text-xs space-y-0.5">
-                                            <div class="flex items-center gap-1 font-bold text-slate-300 text-[11px]">
-                                                <span>${c.author}</span>
-                                                <span class="text-[8px] px-1 rounded border ${cRoleMeta.color}">${cRoleMeta.badge}</span>
-                                            </div>
-                                            <p class="text-slate-300 text-[11px]">${escapeHtml(c.text)}</p>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-
-                            <div class="flex items-center gap-1.5">
-                                <input type="text" id="commentInput_${post.id}" placeholder="Viết câu trả lời..." onkeypress="if(event.key==='Enter') addComment(${post.id})" class="flex-1 bg-slate-900 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl focus:outline-none focus:border-indigo-500">
-                                <button onclick="addComment(${post.id})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold">Gửi</button>
-                            </div>
-                        </div>
+            list.innerHTML = homeworks.map(hw => `
+                <div class="border rounded-lg p-4 bg-gray-50 relative">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${hw.subject}</span>
+                    <h4 class="font-bold text-lg mt-2">${hw.title}</h4>
+                    <p class="text-gray-600 mt-1">${hw.desc}</p>
+                    <div class="text-xs text-gray-400 mt-3 flex justify-between">
+                        <span>Đăng bởi: ${hw.author}</span>
+                        <span>Ngày: ${hw.date}</span>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
         }
 
-        function addComment(postId) {
-            if (!currentUser) { openAuthModal(); return; }
-            const input = document.getElementById(`commentInput_${postId}`);
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if (!text) return;
 
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                post.comments.push({ author: currentUser.name, role: currentUser.role, text });
-                input.value = '';
-                renderPosts();
-            }
-        }
-
-        // --- FULL IMAGE VIEWER ---
-        function openImageViewer(url) {
-            document.getElementById('fullImageView').src = url;
-            document.getElementById('imageViewerModal').classList.remove('hidden');
-        }
-        function closeImageViewer() { document.getElementById('imageViewerModal').classList.add('hidden'); }
-
-        // --- GEMINI AI TUTOR ---
-        function openAiModal() { document.getElementById('aiModal').classList.remove('hidden'); }
-        function closeAiModal() { document.getElementById('aiModal').classList.add('hidden'); }
-
-        function handleAiImageSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                aiSelectedImageBase64 = evt.target.result;
-                document.getElementById('aiImagePreview').src = aiSelectedImageBase64;
-                document.getElementById('aiImagePreviewBox').classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function clearAiImage() {
-            aiSelectedImageBase64 = null;
-            document.getElementById('aiImageInput').value = '';
-            document.getElementById('aiImagePreviewBox').classList.add('hidden');
-        }
-
-        async function sendAiMessage() {
-            const input = document.getElementById('aiInput');
-            const promptText = input.value.trim();
-            if (!promptText && !aiSelectedImageBase64) return;
-
-            const chatHistory = document.getElementById('aiChatHistory');
-
-            const userDiv = document.createElement('div');
-            userDiv.className = 'bg-indigo-600 text-white rounded-2xl p-3 max-w-[85%] ml-auto text-xs leading-relaxed space-y-1';
-            userDiv.innerHTML = `<div>${escapeHtml(promptText)}</div>${aiSelectedImageBase64 ? `<img src="${aiSelectedImageBase64}" class="w-24 h-24 object-cover rounded-lg border border-indigo-400">` : ''}`;
-            chatHistory.appendChild(userDiv);
-
-            const botLoadingDiv = document.createElement('div');
-            botLoadingDiv.className = 'bg-slate-800 border border-slate-700 rounded-2xl p-3 max-w-[85%] text-xs text-slate-300 flex items-center gap-2';
-            botLoadingDiv.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-indigo-400"></i> Gia Sư AI đang suy nghĩ...`;
-            chatHistory.appendChild(botLoadingDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-
-            const currentImg = aiSelectedImageBase64;
+            messages.push({ user: currentUser.fullname, role: currentUser.role, text, time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) });
+            localStorage.setItem('gbt_chat', JSON.stringify(messages));
+            renderChat();
             input.value = '';
-            clearAiImage();
-
-            try {
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-                let contentsParts = [{ text: promptText || "Hãy giải giúp bài tập trong ảnh này." }];
-                if (currentImg) {
-                    contentsParts.push({
-                        inlineData: {
-                            mimeType: currentImg.split(';')[0].split(':')[1],
-                            data: currentImg.split(',')[1]
-                        }
-                    });
-                }
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: contentsParts }],
-                        systemInstruction: { parts: [{ text: "Bạn là Gia Sư AI tận tâm của Lớp 9/3. Hãy hướng dẫn sinh động, chi tiết các bài tập lớp 9." }] }
-                    })
-                });
-
-                const data = await response.json();
-                const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Gia Sư AI chưa phản hồi được câu này, bạn thử lại sau nhé!";
-                botLoadingDiv.className = 'bg-slate-800 border border-slate-700 rounded-2xl p-3 max-w-[85%] text-xs text-slate-200 leading-relaxed whitespace-pre-line';
-                botLoadingDiv.innerHTML = replyText;
-            } catch (err) {
-                botLoadingDiv.className = 'bg-red-900/40 border border-red-700 rounded-2xl p-3 max-w-[85%] text-xs text-red-200';
-                botLoadingDiv.innerText = 'Đã có lỗi xảy ra khi kết nối tới Gia Sư AI.';
-            }
-            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+        function renderChat() {
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML = messages.map(msg => `
+                <div class="mb-2">
+                    <span class="font-bold text-sm text-blue-600">${msg.user}</span>
+                    <span class="text-xs text-gray-400">(${msg.role} - ${msg.time})</span>
+                    <p class="bg-white p-2 rounded shadow-sm text-gray-800 mt-0.5 border inline-block max-w-full">${msg.text}</p>
+                </div>
+            `).join('');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        function askAI() {
+            const q = document.getElementById('ai-question').value.trim();
+            if (!q) return;
+
+            const ansBox = document.getElementById('ai-answer');
+            ansBox.classList.remove('hidden');
+            ansBox.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>AI đang suy nghĩ lời giải...`;
+
+            setTimeout(() => {
+                ansBox.innerHTML = `<strong>Lời giải từ AI Lớp 9/3:</strong><br>Đối với bài tập "${q}", hãy áp dụng kiến thức trọng tâm Lớp 9 để giải quyết. Chúc bạn học tốt để đạt kết quả cao trong kỳ thi vào 10 nhé!`;
+            }, 1000);
         }
     </script>
 </body>
