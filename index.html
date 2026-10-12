@@ -220,7 +220,7 @@
         </div>
     </div>
 
-    <!-- AUTH MODAL -->
+    <!-- AUTH MODAL (ĐĂNG NHẬP / ĐĂNG KÝ CÓ MẬT KHẨU) -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -230,17 +230,29 @@
                 <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 pb-2.5 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition text-xs">Đăng Nhập</button>
                 <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 pb-2.5 text-center font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition text-xs">Đăng Ký Tài Khoản</button>
             </div>
+            
+            <!-- Login Form -->
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5">
                 <div>
                     <label class="block text-xs font-medium text-slate-300 mb-1">Họ và Tên</label>
                     <input type="text" id="loginName" placeholder="Nhập tên của bạn..." required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
                 </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Mật khẩu</label>
+                    <input type="password" id="loginPass" placeholder="Nhập mật khẩu..." required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
+                </div>
                 <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition">Đăng Nhập</button>
             </form>
+
+            <!-- Register Form -->
             <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
                 <div>
                     <label class="block text-xs font-medium text-slate-300 mb-1">Họ và Tên Học Sinh</label>
                     <input type="text" id="regName" placeholder="Ví dụ: Nguyễn Văn A" required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Tạo Mật Khẩu</label>
+                    <input type="password" id="regPass" placeholder="Nhập mật khẩu bảo vệ tài khoản..." required class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-300 mb-1">Chức Vụ Lớp 9/3 👑</label>
@@ -326,6 +338,7 @@
         let selectedPostImageBase64 = null;
         let aiSelectedImageBase64 = null;
 
+        let registeredAccounts = JSON.parse(localStorage.getItem('lop93_accounts')) || {};
         let notices = JSON.parse(localStorage.getItem('lop93_notices')) || [];
         let classChatMessages = JSON.parse(localStorage.getItem('lop93_chats')) || [];
         let posts = JSON.parse(localStorage.getItem('lop93_posts')) || [];
@@ -335,7 +348,7 @@
             if (saved) {
                 currentUser = JSON.parse(saved);
             } else {
-                currentUser = null; // Bắt đầu ở trạng thái trống, không gán cứng tài khoản
+                currentUser = null;
             }
 
             renderHeaderUser();
@@ -370,32 +383,60 @@
         function switchAuthTab(tab) {
             const loginForm = document.getElementById('loginForm');
             const regForm = document.getElementById('registerForm');
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const regBtn = document.getElementById('tabRegisterBtn');
+
             if (tab === 'login') {
-                loginForm.classList.remove('hidden'); regForm.classList.add('hidden');
+                loginForm.classList.remove('hidden'); 
+                regForm.classList.add('hidden');
+                loginBtn.className = "flex-1 pb-2.5 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition text-xs";
+                regBtn.className = "flex-1 pb-2.5 text-center font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition text-xs";
             } else {
-                loginForm.classList.add('hidden'); regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden'); 
+                regForm.classList.remove('hidden');
+                regBtn.className = "flex-1 pb-2.5 text-center font-bold text-indigo-400 border-b-2 border-indigo-500 transition text-xs";
+                loginBtn.className = "flex-1 pb-2.5 text-center font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition text-xs";
             }
         }
 
-        function handleLogin(e) {
+        function handleRegister(e) {
             e.preventDefault();
-            const name = document.getElementById('loginName').value.trim();
-            if (!name) return;
-            currentUser = { name, role: 'Học sinh' };
+            const name = document.getElementById('regName').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            const role = document.getElementById('regRole').value;
+            if (!name || !pass) return;
+
+            if (registeredAccounts[name]) {
+                alert("⚠️ Tên tài khoản này đã tồn tại! Vui lòng chọn tên khác hoặc chuyển sang Đăng Nhập.");
+                return;
+            }
+
+            registeredAccounts[name] = { pass, role };
+            localStorage.setItem('lop93_accounts', JSON.stringify(registeredAccounts));
+
+            currentUser = { name, role };
             sessionStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
             closeAuthModal();
             renderHeaderUser();
             renderNotices();
             renderPosts();
             renderClassChat();
+            alert("🎉 Đăng ký thành công tài khoản: " + name);
         }
 
-        function handleRegister(e) {
+        function handleLogin(e) {
             e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const role = document.getElementById('regRole').value;
-            if (!name) return;
-            currentUser = { name, role };
+            const name = document.getElementById('loginName').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if (!name || !pass) return;
+
+            const acc = registeredAccounts[name];
+            if (!acc || acc.pass !== pass) {
+                alert("❌ Sai tên tài khoản hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng bấm qua tab Đăng Ký.");
+                return;
+            }
+
+            currentUser = { name, role: acc.role };
             sessionStorage.setItem('lop93_user_session', JSON.stringify(currentUser));
             closeAuthModal();
             renderHeaderUser();
