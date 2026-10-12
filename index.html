@@ -3,79 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giải bài tập lớp 9/3</title>
+    <title>Giải Bài Tập Lớp 9/3</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .chat-container { height: calc(100vh - 200px); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .chat-height { height: calc(100vh - 280px); }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-slate-100 font-sans min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
+    <header class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <i class="fas fa-graduation-cap text-2xl"></i>
+                <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur-md">
+                    <i class="fas fa-graduation-cap text-2xl text-yellow-300"></i>
+                </div>
                 <div>
-                    <h1 class="text-xl font-bold">Giải bài tập lớp 9/3</h1>
-                    <p class="text-xs text-blue-200">Mọi người học giỏi để vào lớp 10 cùng nhau nhé 🚀</p>
+                    <h1 class="text-xl font-extrabold tracking-wide">Giải Bài Tập Lớp 9/3</h1>
+                    <p class="text-xs text-indigo-100 font-medium">Mọi người học giỏi để vào lớp 10 cùng nhau nhé 🚀</p>
                 </div>
             </div>
-            <div id="user-status" class="flex items-center space-x-3">
-                <!-- Được render bằng Javascript -->
-            </div>
+            <div id="user-status-bar" class="flex items-center space-x-3"></div>
         </div>
     </header>
 
     <!-- Main Container -->
-    <main class="container mx-auto p-4 max-w-5xl">
-        <!-- Auth Modal / Card -->
-        <div id="auth-section" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto my-10">
-            <h2 id="auth-title" class="text-2xl font-bold text-center mb-6 text-gray-800">Đăng Nhập</h2>
-            <form id="auth-form" onsubmit="handleAuth(event)">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Họ và Tên</label>
-                    <input type="text" id="auth-fullname" required class="w-full p-2 border rounded focus:outline-none focus:border-blue-500" placeholder="Ví dụ: Nguyễn Văn A">
+    <main class="container mx-auto px-4 py-6 flex-grow max-w-6xl">
+        <!-- Auth Modal -->
+        <div id="auth-modal" class="max-w-md mx-auto my-12 bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white text-center">
+                <i class="fas fa-user-circle text-5xl mb-2 text-indigo-200"></i>
+                <h2 class="text-2xl font-bold">Tham Gia Lớp Học 9/3</h2>
+                <p class="text-xs text-indigo-100 mt-1">Vui lòng nhập thông tin cá nhân của bạn</p>
+            </div>
+            <form onsubmit="handleAuth(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Họ và Tên</label>
+                    <input type="text" id="input-fullname" required placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Chức vụ trong lớp</label>
-                    <select id="auth-role" class="w-full p-2 border rounded focus:outline-none focus:border-blue-500">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Chức vụ trong lớp</label>
+                    <select id="input-role" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                         <option value="Học sinh">Học sinh</option>
-                        <option value="Lớp trưởng">Lớp trưởng</option>
-                        <option value="Lớp phó">Lớp phó</option>
-                        <option value="Tổ trưởng">Tổ trưởng</option>
+                        <option value="Lớp trưởng">Lớp trưởng (Ban cán sự)</option>
+                        <option value="Lớp phó">Lớp phó (Ban cán sự)</option>
+                        <option value="Tổ trưởng">Tổ trưởng (Ban cán sự)</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition duration-200">
-                    Vào Trang Web
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md hover:shadow-lg transition duration-200">
+                    Vào Trang Web <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </form>
         </div>
 
-        <!-- Main Dashboard (Ẩn khi chưa đăng nhập) -->
-        <div id="dashboard" class="hidden">
-            <!-- Navigation Tabs -->
-            <div class="flex border-b border-gray-200 bg-white rounded-t-lg mb-4">
-                <button onclick="switchTab('homework')" id="tab-homework" class="py-3 px-6 text-blue-600 font-semibold border-b-2 border-blue-600 focus:outline-none">
-                    <i class="fas fa-book-open mr-2"></i>Bài Tập & Thông Báo
+        <!-- Dashboard Workspace -->
+        <div id="app-dashboard" class="hidden">
+            <!-- Navigation -->
+            <div class="flex space-x-2 border-b border-slate-200 mb-6 overflow-x-auto pb-1">
+                <button onclick="switchTab('homework')" id="btn-tab-homework" class="px-5 py-3 font-semibold text-blue-600 border-b-2 border-blue-600 flex items-center space-x-2 focus:outline-none whitespace-nowrap">
+                    <i class="fas fa-book text-lg"></i><span>Bài Tập & Thông Báo</span>
                 </button>
-                <button onclick="switchTab('chat')" id="tab-chat" class="py-3 px-6 text-gray-500 font-semibold focus:outline-none">
-                    <i class="fas fa-comments mr-2"></i>Phòng Chat Lớp
+                <button onclick="switchTab('chat')" id="btn-tab-chat" class="px-5 py-3 font-semibold text-slate-500 hover:text-slate-700 flex items-center space-x-2 focus:outline-none whitespace-nowrap">
+                    <i class="fas fa-comments text-lg"></i><span>Phòng Chat Lớp</span>
                 </button>
-                <button onclick="switchTab('ai-tutor')" id="tab-ai-tutor" class="py-3 px-6 text-gray-500 font-semibold focus:outline-none">
-                    <i class="fas fa-robot mr-2"></i>Trợ Lý AI Học Tập
+                <button onclick="switchTab('ai')" id="btn-tab-ai" class="px-5 py-3 font-semibold text-slate-500 hover:text-slate-700 flex items-center space-x-2 focus:outline-none whitespace-nowrap">
+                    <i class="fas fa-robot text-lg"></i><span>Trợ Lý AI Ôn Thi 10</span>
                 </button>
             </div>
 
-            <!-- TAB 1: BÀI TẬP & THÔNG BÁO -->
-            <div id="content-homework" class="tab-content active bg-white p-6 rounded-b-lg shadow-md">
-                <div id="leader-controls" class="hidden mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h3 class="font-bold text-blue-800 mb-2"><i class="fas fa-plus-circle mr-2"></i>Đăng bài tập / Thông báo mới (Dành cho Ban Cán Sự)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                        <select id="hw-subject" class="p-2 border rounded">
-                            <option value="Toán">Toán</option>
+            <!-- Tab Bài Tập -->
+            <div id="tab-homework" class="tab-content">
+                <!-- Leader Add Post Panel -->
+                <div id="leader-panel" class="hidden mb-6 bg-white p-5 rounded-xl shadow-sm border border-indigo-100">
+                    <h3 class="font-bold text-slate-800 text-lg mb-3 flex items-center text-indigo-600">
+                        <i class="fas fa-pen-to-square mr-2"></i>Tạo Thông Báo / Bài Tập Mới (Ban Cán Sự)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                        <select id="hw-subject" class="p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Toán">Toán học</option>
                             <option value="Ngữ văn">Ngữ văn</option>
                             <option value="Tiếng Anh">Tiếng Anh</option>
                             <option value="Vật lý">Vật lý</option>
@@ -89,65 +95,58 @@
                             <option value="Âm nhạc">Âm nhạc</option>
                             <option value="Mỹ thuật">Mỹ thuật</option>
                         </select>
-                        <input type="text" id="hw-title" placeholder="Tiêu đề bài tập / nội dung..." class="p-2 border rounded">
+                        <input type="text" id="hw-title" placeholder="Tiêu đề bài tập/thông báo..." class="md:col-span-2 p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
-                    <textarea id="hw-desc" placeholder="Chi tiết bài tập hoặc lời dặn..." class="w-full p-2 border rounded mb-3" rows="3"></textarea>
-                    <button onclick="addHomework()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">Đăng Bài</button>
+                    <textarea id="hw-desc" rows="3" placeholder="Chi tiết bài tập, dặn dò hoặc thời hạn nộp..." class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-3"></textarea>
+                    <button onclick="createPost()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg transition shadow">Đăng Bài</button>
                 </div>
 
-                <h3 class="text-xl font-bold mb-4 text-gray-800">Danh Sách Bài Tập Cần Làm</h3>
-                <div id="homework-list" class="space-y-4">
-                    <!-- Danh sách bài tập render ở đây -->
-                </div>
+                <div id="homework-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- TAB 2: PHÒNG CHAT LỚP -->
-            <div id="content-chat" class="tab-content bg-white p-6 rounded-b-lg shadow-md">
-                <div class="chat-container flex flex-col justify-between">
-                    <div id="chat-messages" class="overflow-y-auto p-4 space-y-3 bg-gray-50 rounded-lg border flex-grow mb-4">
-                        <!-- Tin nhắn chat render ở đây -->
-                    </div>
+            <!-- Tab Chat -->
+            <div id="tab-chat" class="tab-content hidden bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                <div class="chat-height flex flex-col justify-between">
+                    <div id="chat-box" class="overflow-y-auto space-y-3 p-3 bg-slate-50 rounded-lg border border-slate-100 flex-grow mb-3"></div>
                     <div class="flex space-x-2">
-                        <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." class="flex-grow p-2 border rounded focus:outline-none focus:border-blue-500" onkeypress="if(event.key==='Enter') sendMessage()">
-                        <button onclick="sendMessage()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">Gửi</button>
+                        <input type="text" id="chat-msg" placeholder="Nhập tin nhắn..." class="flex-grow p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" onkeypress="if(event.key==='Enter') sendChat()">
+                        <button onclick="sendChat()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow">Gửi</button>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 3: TRỢ LÝ AI HỌC TẬP -->
-            <div id="content-ai-tutor" class="tab-content bg-white p-6 rounded-b-lg shadow-md">
-                <div class="text-center p-6">
-                    <i class="fas fa-robot text-5xl text-blue-600 mb-4"></i>
-                    <h3 class="text-2xl font-bold mb-2">Trợ Lý AI Lớp 9/3</h3>
-                    <p class="text-gray-600 mb-6">Giải đáp mọi bài tập Toán, Văn, Anh, Lý, Hóa cho các bạn chuẩn bị thi vào 10!</p>
-                    <div class="max-w-xl mx-auto border rounded-lg p-4 bg-gray-50 text-left">
-                        <textarea id="ai-question" class="w-full p-3 border rounded mb-3" rows="4" placeholder="Nhập câu hỏi hoặc đề bài bạn cần giải..."></textarea>
-                        <button onclick="askAI()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700">Nhờ AI Giải Giúp</button>
-                        <div id="ai-answer" class="mt-4 p-4 bg-white border rounded hidden">
-                            <!-- Đáp án AI -->
-                        </div>
+            <!-- Tab AI -->
+            <div id="tab-ai" class="tab-content hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center">
+                <div class="max-w-xl mx-auto">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-robot text-3xl"></i>
                     </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Trợ Lý Gia Sư AI Lớp 9/3</h3>
+                    <p class="text-slate-500 mb-6 text-sm">Hỏi bất kỳ bài tập Toán, Văn, Anh, Lý, Hóa để chuẩn bị ôn thi vào 10!</p>
+                    <textarea id="ai-prompt" rows="4" placeholder="Nhập câu hỏi hoặc đề bài bạn đang thắc mắc..." class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none mb-3 text-left"></textarea>
+                    <button onclick="askAITutor()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition">Nhờ AI Giải Giúp</button>
+                    <div id="ai-response" class="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl text-left hidden"></div>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 text-center text-gray-500 text-xs py-4">
-        Developer by Nguyễn Tấn Lộc | Lớp 9/3
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto">
+        Developer by <span class="font-bold text-slate-700">Nguyễn Tấn Lộc</span> | Tập thể lớp 9/3
     </footer>
 
     <script>
         let currentUser = null;
-        let homeworks = JSON.parse(localStorage.getItem('gbt_hw')) || [];
-        let messages = JSON.parse(localStorage.getItem('gbt_chat')) || [];
+        let posts = JSON.parse(localStorage.getItem('gbt_posts_v2')) || [];
+        let chatLogs = JSON.parse(localStorage.getItem('gbt_chat_v2')) || [];
 
-        // Kiểm tra phiên làm việc - MẶC ĐỊNH LÀ CHƯA ĐĂNG NHẬP DÙ Ở BẤT KỲ MÁY NÀO
         window.onload = function() {
-            const savedUser = sessionStorage.getItem('gbt_current_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                renderApp();
+            // Sử dụng sessionStorage để các máy/tab khác nhau không dính phiên của nhau
+            const session = sessionStorage.getItem('gbt_user_session');
+            if (session) {
+                currentUser = JSON.parse(session);
+                initDashboard();
             } else {
                 showAuth();
             }
@@ -155,135 +154,39 @@
 
         function handleAuth(e) {
             e.preventDefault();
-            const fullname = document.getElementById('auth-fullname').value.trim();
-            const role = document.getElementById('auth-role').value;
-            
+            const fullname = document.getElementById('input-fullname').value.trim();
+            const role = document.getElementById('input-role').value;
             if (!fullname) return;
 
             currentUser = { fullname, role };
-            // Lưu vào sessionStorage để mỗi tab/máy tính hoạt động độc lập
-            sessionStorage.setItem('gbt_current_user', JSON.stringify(currentUser));
-            renderApp();
+            sessionStorage.setItem('gbt_user_session', JSON.stringify(currentUser));
+            initDashboard();
         }
 
         function logout() {
-            sessionStorage.removeItem('gbt_current_user');
+            sessionStorage.removeItem('gbt_user_session');
             currentUser = null;
             location.reload();
         }
 
         function showAuth() {
-            document.getElementById('auth-section').classList.remove('hidden');
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('user-status').innerHTML = '';
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('app-dashboard').classList.add('hidden');
+            document.getElementById('user-status-bar').innerHTML = '';
         }
 
-        function renderApp() {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
+        function initDashboard() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
 
-            document.getElementById('user-status').innerHTML = `
+            document.getElementById('user-status-bar').innerHTML = `
                 <div class="text-right">
-                    <span class="font-bold block">${currentUser.fullname}</span>
-                    <span class="text-xs bg-blue-800 px-2 py-0.5 rounded">${currentUser.role}</span>
+                    <span class="font-bold block text-sm">${currentUser.fullname}</span>
+                    <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full uppercase tracking-wider">${currentUser.role}</span>
                 </div>
-                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">Đăng xuất</button>
+                <button onclick="logout()" class="bg-red-500/80 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                    <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+                </button>
             `;
 
-            if (['Lớp trưởng', 'Lớp phó', 'Tổ trưởng'].includes(currentUser.role)) {
-                document.getElementById('leader-controls').classList.remove('hidden');
-            } else {
-                document.getElementById('leader-controls').classList.add('hidden');
-            }
-
-            renderHomework();
-            renderChat();
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(`content-${tabName}`).classList.add('active');
-
-            ['homework', 'chat', 'ai-tutor'].forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                if (t === tabName) {
-                    btn.className = "py-3 px-6 text-blue-600 font-semibold border-b-2 border-blue-600 focus:outline-none";
-                } else {
-                    btn.className = "py-3 px-6 text-gray-500 font-semibold focus:outline-none";
-                }
-            });
-        }
-
-        function addHomework() {
-            const subject = document.getElementById('hw-subject').value;
-            const title = document.getElementById('hw-title').value.trim();
-            const desc = document.getElementById('hw-desc').value.trim();
-
-            if (!title) return alert('Vui lòng nhập tiêu đề!');
-
-            homeworks.unshift({ id: Date.now(), subject, title, desc, author: currentUser.fullname, date: new Date().toLocaleDateString('vi-VN') });
-            localStorage.setItem('gbt_hw', JSON.stringify(homeworks));
-            renderHomework();
-
-            document.getElementById('hw-title').value = '';
-            document.getElementById('hw-desc').value = '';
-        }
-
-        function renderHomework() {
-            const list = document.getElementById('homework-list');
-            if (homeworks.length === 0) {
-                list.innerHTML = `<p class="text-gray-500 text-center py-6">Chưa có bài tập nào được đăng.</p>`;
-                return;
-            }
-
-            list.innerHTML = homeworks.map(hw => `
-                <div class="border rounded-lg p-4 bg-gray-50 relative">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${hw.subject}</span>
-                    <h4 class="font-bold text-lg mt-2">${hw.title}</h4>
-                    <p class="text-gray-600 mt-1">${hw.desc}</p>
-                    <div class="text-xs text-gray-400 mt-3 flex justify-between">
-                        <span>Đăng bởi: ${hw.author}</span>
-                        <span>Ngày: ${hw.date}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            messages.push({ user: currentUser.fullname, role: currentUser.role, text, time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) });
-            localStorage.setItem('gbt_chat', JSON.stringify(messages));
-            renderChat();
-            input.value = '';
-        }
-
-        function renderChat() {
-            const chatBox = document.getElementById('chat-messages');
-            chatBox.innerHTML = messages.map(msg => `
-                <div class="mb-2">
-                    <span class="font-bold text-sm text-blue-600">${msg.user}</span>
-                    <span class="text-xs text-gray-400">(${msg.role} - ${msg.time})</span>
-                    <p class="bg-white p-2 rounded shadow-sm text-gray-800 mt-0.5 border inline-block max-w-full">${msg.text}</p>
-                </div>
-            `).join('');
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function askAI() {
-            const q = document.getElementById('ai-question').value.trim();
-            if (!q) return;
-
-            const ansBox = document.getElementById('ai-answer');
-            ansBox.classList.remove('hidden');
-            ansBox.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>AI đang suy nghĩ lời giải...`;
-
-            setTimeout(() => {
-                ansBox.innerHTML = `<strong>Lời giải từ AI Lớp 9/3:</strong><br>Đối với bài tập "${q}", hãy áp dụng kiến thức trọng tâm Lớp 9 để giải quyết. Chúc bạn học tốt để đạt kết quả cao trong kỳ thi vào 10 nhé!`;
-            }, 1000);
-        }
-    </script>
-</body>
-</html>
+            if
