@@ -220,7 +220,7 @@
         </div>
     </div>
 
-    <!-- AUTH MODAL (ĐĂNG NHẬP / ĐĂNG KÝ CÓ MẬT KHẨU) -->
+    <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -231,7 +231,6 @@
                 <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 pb-2.5 text-center font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition text-xs">Đăng Ký Tài Khoản</button>
             </div>
             
-            <!-- Login Form -->
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5">
                 <div>
                     <label class="block text-xs font-medium text-slate-300 mb-1">Họ và Tên</label>
@@ -244,7 +243,6 @@
                 <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition">Đăng Nhập</button>
             </form>
 
-            <!-- Register Form -->
             <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
                 <div>
                     <label class="block text-xs font-medium text-slate-300 mb-1">Họ và Tên Học Sinh</label>
@@ -339,7 +337,9 @@
         let aiSelectedImageBase64 = null;
 
         let registeredAccounts = JSON.parse(localStorage.getItem('lop93_accounts')) || {};
-        let notices = JSON.parse(localStorage.getItem('lop93_notices')) || [];
+        let notices = JSON.parse(localStorage.getItem('lop93_notices')) || [
+            { id: 1, author: 'Hệ Thống', role: 'Lớp trưởng', content: 'Chào mừng tập thể lớp 9/3 đến với không gian học tập chung!', date: 'Hôm nay' }
+        ];
         let classChatMessages = JSON.parse(localStorage.getItem('lop93_chats')) || [];
         let posts = JSON.parse(localStorage.getItem('lop93_posts')) || [];
 
